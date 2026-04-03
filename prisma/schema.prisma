@@ -1,0 +1,836 @@
+// Database schema for Board Musafir - Travel Booking & Activity Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// USER MANAGEMENT & AUTHENTICATION
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  password      String? // Hashed password for email/password auth
+  image         String? // Profile picture URL
+  role          UserRole  @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  profile       Profile?
+  itineraries   Itinerary[]
+  bookings      Booking[]
+  reviews       Review[]
+  wishlists     Wishlist[]
+  notifications Notification[]
+
+  @@index([email])
+  @@map("users")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  PARTNER
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Profile {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  phone             String?
+  bio               String?
+  dateOfBirth       DateTime?
+  gender            String?
+  nationality       String?
+  address           String?
+  city              String?
+  state             String?
+  country           String?
+  postalCode        String?
+  
+  // Travel preferences
+  budgetPreference  BudgetTier? @default(MID)
+  travelInterests   String[] // Array of interests: Adventure, Culture, Nature, etc.
+  preferredTransport String[] // Flight, Train, Bus, Car
+  dietaryRestrictions String?
+  
+  // Stats
+  totalTrips        Int      @default(0)
+  placesVisited     Int      @default(0)
+  totalSpent        Float    @default(0)
+  
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([userId])
+  @@map("profiles")
+}
+
+// ============================================
+// DESTINATIONS & CONTENT
+// ============================================
+
+model Destination {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  country       String
+  state         String?
+  description   String?  @db.Text
+  shortDesc     String?
+  latitude      Float?
+  longitude     Float?
+  timezone      String?
+  
+  // Media
+  featuredImage String?
+  images        String[] // Array of image URLs
+  
+  // Seasonal information
+  bestSeasons   String[] // Winter, Summer, Monsoon, Spring, Autumn
+  peakMonths    String[] // Jan, Feb, etc.
+  
+  // Meta
+  isActive      Boolean  @default(true)
+  isFeatured    Boolean  @default(false)
+  viewCount     Int      @default(0)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  itineraries   Itinerary[]
+  activities    Activity[]
+  hotels        Hotel[]
+  travelContent TravelContent[]
+  
+  @@index([slug])
+  @@index([country])
+  @@map("destinations")
+}
+
+model TravelContent {
+  id            String      @id @default(cuid())
+  slug          String      @unique
+  title         String
+  content       String      @db.Text
+  excerpt       String?
+  featuredImage String?
+  author        String?
+  
+  // Integration with main site
+  mainSiteUrl   String? // URL to the blog post on owlous.in
+  mainSiteId    String? // ID from main site for syncing
+  
+  destinationId String?
+  destination   Destination? @relation(fields: [destinationId], references: [id])
+  
+  // Mapped itinerary
+  itineraryId   String?     @unique
+  itinerary     Itinerary?  @relation("ContentItinerary", fields: [itineraryId], references: [id])
+  
+  publishedAt   DateTime?
+  isPublished   Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([slug])
+  @@index([destinationId])
+  @@map("travel_content")
+}
+
+// ============================================
+// ITINERARY MANAGEMENT
+// ============================================
+
+model Itinerary {
+  id              String         @id @default(cuid())
+  userId          String
+  user            User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title           String
+  description     String?        @db.Text
+  slug            String?        @unique
+  
+  // Trip details
+  daysCount       Int
+  nightsCount     Int
+  startDate       DateTime?
+  endDate         DateTime?
+  
+  // Budget
+  budgetTier      BudgetTier     @default(MID)
+  estimatedCost   Float?
+  currency        String         @default("INR")
+  
+  // Preferences
+  travelMode      String[] // Flight, Train, Bus, Car
+  interests       String[] // Adventure, Culture, Nature, etc.
+  paxAdults       Int            @default(2)
+  paxChildren     Int            @default(0)
+  paxInfants      Int            @default(0)
+  
+  // Destination
+  destinationId   String?
+  destination     Destination?   @relation(fields: [destinationId], references: [id])
+  
+  // Generation metadata
+  generatedBy     ItinerarySource @default(MANUAL)
+  aiModel         String? // GPT-4, Claude, etc.
+  aiPrompt        String?        @db.Text
+  
+  // Status
+  status          ItineraryStatus @default(DRAFT)
+  isTemplate      Boolean        @default(false)
+  isPublic        Boolean        @default(false)
+  viewCount       Int            @default(0)
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  items           ItineraryItem[]
+  bookings        Booking[]
+  travelContent   TravelContent? @relation("ContentItinerary")
+  wishlists       Wishlist[]
+
+  @@index([userId])
+  @@index([destinationId])
+  @@index([status])
+  @@index([slug])
+  @@map("itineraries")
+}
+
+enum BudgetTier {
+  LOW
+  MID
+  LUXURY
+}
+
+enum ItinerarySource {
+  MANUAL
+  AI_GENERATED
+  TEMPLATE
+  BLOG_IMPORT
+}
+
+enum ItineraryStatus {
+  DRAFT
+  PUBLISHED
+  BOOKED
+  ARCHIVED
+}
+
+model ItineraryItem {
+  id            String      @id @default(cuid())
+  itineraryId   String
+  itinerary     Itinerary   @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  
+  dayNumber     Int
+  itemOrder     Int         @default(0)
+  
+  // Item details
+  itemType      ItemType
+  title         String
+  description   String?     @db.Text
+  
+  // Timing
+  startTime     String? // HH:MM format
+  endTime       String?
+  duration      Int? // Duration in minutes
+  
+  // Location
+  location      String?
+  address       String?
+  latitude      Float?
+  longitude     Float?
+  
+  // Pricing
+  estimatedCost Float?
+  currency      String      @default("INR")
+  
+  // Type-specific data (stored as JSON)
+  itemData      Json? // Flight details, hotel info, activity details, etc.
+  
+  // Relations
+  activityId    String?
+  activity      Activity?   @relation(fields: [activityId], references: [id])
+  
+  hotelId       String?
+  hotel         Hotel?      @relation(fields: [hotelId], references: [id])
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@index([itineraryId, dayNumber])
+  @@index([itemType])
+  @@map("itinerary_items")
+}
+
+enum ItemType {
+  FLIGHT
+  TRAIN
+  BUS
+  CAB
+  HOTEL
+  ACTIVITY
+  RESTAURANT
+  MONUMENT
+  TRANSPORT_OTHER
+  FREE_TIME
+  NOTE
+}
+
+// ============================================
+// ACTIVITIES & EXPERIENCES
+// ============================================
+
+model Activity {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  description   String      @db.Text
+  shortDesc     String?
+  
+  // Category
+  category      ActivityCategory
+  subCategory   String?
+  tags          String[]
+  
+  // Location
+  destinationId String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  address       String?
+  latitude      Float?
+  longitude     Float?
+  
+  // Pricing
+  priceFrom     Float
+  priceTo       Float?
+  currency      String      @default("INR")
+  pricingType   String? // Per person, Per group, Per hour
+  
+  // Details
+  duration      Int? // Duration in minutes
+  minPax        Int?         @default(1)
+  maxPax        Int?
+  ageRestriction String?
+  
+  // Media
+  featuredImage String?
+  images        String[]
+  videoUrl      String?
+  
+  // Provider details
+  providerId    String?
+  providerName  String?
+  providerType  ProviderType @default(DIRECT)
+  apiData       Json? // Data from external API (GetYourGuide, Viator)
+  
+  // Availability
+  isActive      Boolean     @default(true)
+  availableDays String[] // Mon, Tue, Wed, etc.
+  seasonality   String[] // All year, Winter only, etc.
+  
+  // Ratings
+  rating        Float?
+  reviewCount   Int         @default(0)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  itineraryItems ItineraryItem[]
+  bookingItems   BookingItem[]
+  reviews        Review[]
+
+  @@index([slug])
+  @@index([destinationId])
+  @@index([category])
+  @@map("activities")
+}
+
+enum ActivityCategory {
+  ADVENTURE
+  CULTURE
+  NATURE
+  FOOD
+  WELLNESS
+  ENTERTAINMENT
+  EDUCATION
+  SHOPPING
+  SPORTS
+  NIGHTLIFE
+}
+
+enum ProviderType {
+  DIRECT // Direct listing by partner
+  GET_YOUR_GUIDE
+  VIATOR
+  MANUAL // Manually curated
+}
+
+// ============================================
+// ACCOMMODATION
+// ============================================
+
+model Hotel {
+  id            String      @id @default(cuid())
+  name          String
+  slug          String      @unique
+  description   String?     @db.Text
+  
+  // Location
+  destinationId String
+  destination   Destination @relation(fields: [destinationId], references: [id])
+  address       String
+  city          String
+  state         String?
+  country       String
+  postalCode    String?
+  latitude      Float?
+  longitude     Float?
+  
+  // Property details
+  propertyType  HotelType
+  starRating    Int?
+  amenities     String[]
+  
+  // Pricing
+  priceFrom     Float
+  priceTo       Float?
+  currency      String      @default("INR")
+  
+  // Media
+  featuredImage String?
+  images        String[]
+  
+  // Provider details
+  providerId    String?
+  providerName  String?
+  providerType  HotelProviderType @default(DIRECT)
+  apiData       Json? // Data from Booking.com, Agoda
+  bookingUrl    String? // External booking URL
+  
+  // Property info
+  checkInTime   String? // HH:MM
+  checkOutTime  String? // HH:MM
+  policies      String? @db.Text
+  
+  // Ratings
+  rating        Float?
+  reviewCount   Int         @default(0)
+  
+  isActive      Boolean     @default(true)
+  isFeatured    Boolean     @default(false)
+  
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  rooms         HotelRoom[]
+  itineraryItems ItineraryItem[]
+  bookingItems   BookingItem[]
+  reviews        Review[]
+
+  @@index([slug])
+  @@index([destinationId])
+  @@index([propertyType])
+  @@map("hotels")
+}
+
+enum HotelType {
+  HOTEL
+  RESORT
+  HOMESTAY
+  GUESTHOUSE
+  VILLA
+  APARTMENT
+  HOSTEL
+  BOUTIQUE
+}
+
+enum HotelProviderType {
+  DIRECT
+  BOOKING_COM
+  AGODA
+  MANUAL
+}
+
+model HotelRoom {
+  id            String   @id @default(cuid())
+  hotelId       String
+  hotel         Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  
+  name          String
+  description   String?  @db.Text
+  roomType      String // Deluxe, Suite, Standard, etc.
+  
+  // Capacity
+  maxOccupancy  Int
+  bedType       String?
+  roomSize      Int? // in sq ft
+  
+  // Pricing
+  basePrice     Float
+  currency      String   @default("INR")
+  
+  amenities     String[]
+  images        String[]
+  
+  isAvailable   Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  bookingItems  BookingItem[]
+
+  @@index([hotelId])
+  @@map("hotel_rooms")
+}
+
+// ============================================
+// BOOKING MANAGEMENT
+// ============================================
+
+model Booking {
+  id              String         @id @default(cuid())
+  bookingNumber   String         @unique // e.g., BM-2026-001234
+  
+  userId          String
+  user            User           @relation(fields: [userId], references: [id])
+  
+  itineraryId     String?
+  itinerary       Itinerary?     @relation(fields: [itineraryId], references: [id])
+  
+  // Booking details
+  bookingType     BookingType
+  status          BookingStatus  @default(PENDING)
+  
+  // Traveler info
+  leadTravelerName String
+  leadTravelerEmail String
+  leadTravelerPhone String
+  totalPax        Int
+  
+  // Financial
+  totalAmount     Float
+  currency        String         @default("INR")
+  paidAmount      Float          @default(0)
+  refundAmount    Float?
+  
+  // Dates
+  travelStartDate DateTime?
+  travelEndDate   DateTime?
+  
+  // Cancellation
+  cancellationReason String?     @db.Text
+  cancelledAt     DateTime?
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  confirmedAt     DateTime?
+
+  // Relations
+  items           BookingItem[]
+  payments        Payment[]
+  tickets         Ticket[]
+
+  @@index([userId])
+  @@index([bookingNumber])
+  @@index([status])
+  @@map("bookings")
+}
+
+enum BookingType {
+  PACKAGE // Full itinerary booking
+  STANDALONE // Single item booking
+  CUSTOM // Custom booking
+}
+
+enum BookingStatus {
+  PENDING
+  PROCESSING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  FAILED
+}
+
+model BookingItem {
+  id              String       @id @default(cuid())
+  bookingId       String
+  booking         Booking      @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  
+  itemType        ItemType
+  itemName        String
+  itemDescription String?      @db.Text
+  
+  // Provider details
+  provider        String // API provider or partner name
+  providerRef     String? // Confirmation code from provider
+  providerData    Json? // Full response from provider API
+  
+  // Activity booking
+  activityId      String?
+  activity        Activity?    @relation(fields: [activityId], references: [id])
+  
+  // Hotel booking
+  hotelId         String?
+  hotel           Hotel?       @relation(fields: [hotelId], references: [id])
+  roomId          String?
+  room            HotelRoom?   @relation(fields: [roomId], references: [id])
+  
+  // Dates
+  startDate       DateTime?
+  endDate         DateTime?
+  
+  // Pricing
+  quantity        Int          @default(1)
+  unitPrice       Float
+  totalPrice      Float
+  currency        String       @default("INR")
+  
+  status          BookingStatus @default(PENDING)
+  
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  @@index([bookingId])
+  @@index([activityId])
+  @@index([hotelId])
+  @@map("booking_items")
+}
+
+// ============================================
+// PAYMENT MANAGEMENT
+// ============================================
+
+model Payment {
+  id              String        @id @default(cuid())
+  bookingId       String
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+  
+  // Payment details
+  amount          Float
+  currency        String        @default("INR")
+  status          PaymentStatus @default(PENDING)
+  
+  // Gateway details (Razorpay)
+  gateway         String        @default("RAZORPAY")
+  razorpayOrderId String?       @unique
+  razorpayPaymentId String?     @unique
+  razorpaySignature String?
+  
+  // Payment method
+  paymentMethod   String? // card, upi, netbanking, wallet
+  
+  // Refund
+  refundAmount    Float?
+  refundReason    String?
+  refundedAt      DateTime?
+  
+  // Metadata
+  gatewayResponse Json?
+  ipAddress       String?
+  userAgent       String?
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  paidAt          DateTime?
+
+  @@index([bookingId])
+  @@index([razorpayOrderId])
+  @@index([razorpayPaymentId])
+  @@map("payments")
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCESS
+  FAILED
+  REFUNDED
+  PARTIAL_REFUND
+}
+
+// ============================================
+// TICKETS & VOUCHERS
+// ============================================
+
+model Ticket {
+  id              String   @id @default(cuid())
+  ticketNumber    String   @unique
+  
+  bookingId       String
+  booking         Booking  @relation(fields: [bookingId], references: [id])
+  
+  itemType        ItemType
+  ticketType      String // E-ticket, Voucher, Boarding Pass, etc.
+  
+  // File storage
+  pdfUrl          String? // S3 URL to PDF ticket
+  qrCode          String? // QR code for verification
+  
+  // Validity
+  validFrom       DateTime?
+  validUntil      DateTime?
+  
+  isUsed          Boolean  @default(false)
+  usedAt          DateTime?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([ticketNumber])
+  @@map("tickets")
+}
+
+// ============================================
+// REVIEWS & RATINGS
+// ============================================
+
+model Review {
+  id          String   @id @default(cuid())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Review target
+  targetType  ReviewTarget
+  activityId  String?
+  activity    Activity? @relation(fields: [activityId], references: [id])
+  hotelId     String?
+  hotel       Hotel?    @relation(fields: [hotelId], references: [id])
+  
+  // Review content
+  rating      Int // 1-5
+  title       String?
+  review      String   @db.Text
+  
+  // Metadata
+  isVerified  Boolean  @default(false) // Verified booking
+  isPublished Boolean  @default(true)
+  helpfulCount Int     @default(0)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([activityId])
+  @@index([hotelId])
+  @@map("reviews")
+}
+
+enum ReviewTarget {
+  ACTIVITY
+  HOTEL
+  ITINERARY
+}
+
+// ============================================
+// WISHLIST & FAVORITES
+// ============================================
+
+model Wishlist {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  itineraryId String
+  itinerary   Itinerary @relation(fields: [itineraryId], references: [id], onDelete: Cascade)
+  
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, itineraryId])
+  @@index([userId])
+  @@map("wishlists")
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  type      NotificationType
+  title     String
+  message   String   @db.Text
+  link      String?
+  
+  isRead    Boolean  @default(false)
+  readAt    DateTime?
+  
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  BOOKING_CONFIRMATION
+  PAYMENT_SUCCESS
+  PAYMENT_FAILED
+  BOOKING_REMINDER
+  PRICE_DROP
+  ITINERARY_SHARED
+  ACCOUNT_UPDATE
+  SYSTEM
+}
