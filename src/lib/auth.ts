@@ -106,11 +106,13 @@ export const {
   events: {
     async createUser({ user }) {
       // Create profile for new user
-      await prisma.profile.create({
-        data: {
-          userId: user.id,
-        },
-      });
+      if (user.id) {
+        await prisma.profile.create({
+          data: {
+            userId: user.id,
+          },
+        });
+      }
     },
   },
   debug: process.env.NODE_ENV === 'development',

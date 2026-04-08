@@ -88,6 +88,34 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000)
 
+### 7. Test Database Connection
+Once the server is running, test your database and Redis connections:
+
+```bash
+# Using curl
+curl http://localhost:3000/api/health
+
+# Or visit in browser
+# http://localhost:3000/api/health
+```
+
+Expected response:
+```json
+{
+  "status": "healthy",
+  "timestamp": "2026-04-04T...",
+  "services": {
+    "database": "connected",
+    "redis": "connected"
+  }
+}
+```
+
+If you see "unhealthy" or connection errors, check:
+- PostgreSQL is running and accessible
+- Redis is running
+- .env.local has correct DATABASE_URL and REDIS_URL
+
 ## Useful Commands
 
 ### Database
@@ -105,6 +133,58 @@ Visit [http://localhost:3000](http://localhost:3000)
 - `npm run type-check` - Type check with TypeScript
 
 ## Troubleshooting
+
+### Prisma 7 Adapter Configuration
+This project uses **Prisma 7**, which requires a database adapter. The PrismaClient is configured with the PostgreSQL adapter (`@prisma/adapter-pg`) in `src/lib/db.ts`. 
+
+If you see errors like:
+```
+PrismaClientConstructorValidationError: Using engine type "client" requires either "adapter" or "accelerateUrl"
+```
+
+This means:
+- The adapter packages are missing (run `npm install @prisma/adapter-pg pg @types/pg`)
+- The DATABASE_URL is not set in .env.local
+- PostgreSQL is not running
+
+### Edge Runtime and Node.js Modules
+If you see errors like:
+```
+The edge runtime does not support Node.js 'crypto' module
+The "middleware" file convention is deprecated. Please use "proxy" instead.
+```
+
+**Solution**: Authentication is handled at the page/API route level rather than in the proxy to avoid Edge Runtime compatibility issues.
+
+Next.js 16 changes:
+- Renamed `middleware.ts` → `proxy.ts`
+- Proxy runs in Edge Runtime by default
+- Edge Runtime doesn't support Node.js modules like `crypto` (used by bcrypt in NextAuth)
+
+**How authentication works now**:
+1. The proxy (`src/proxy.ts`) allows all requests through
+2. Protected pages use `requireAuth()` helper from `src/lib/auth-helpers.ts`
+3. Auth checks happen in Server Components (Node.js runtime)
+
+**Example usage in a protected page**:
+```typescript
+// app/dashboard/page.tsx
+import { requireAuth } from '@/lib/auth-helpers';
+
+export default async function DashboardPage() {
+  const session = await requireAuth(); // Redirects to login if not authenticated
+  
+  return <div>Welcome, {session.user.name}!</div>;
+}
+```
+
+**Available auth helpers**:
+- `requireAuth()` - Get session or redirect to login
+- `requireAdmin()` - Require ADMIN role
+- `requirePartner()` - Require PARTNER or ADMIN role  
+- `getSession()` - Get session or null (optional auth)
+- `isAuthenticated()` - Boolean check
+- `hasRole(role)` - Check specific role
 
 ### Database Connection Issues
 ```bash
