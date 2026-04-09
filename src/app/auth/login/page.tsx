@@ -9,7 +9,7 @@ export default function LoginPage() {
       <nav className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none fixed top-0 w-full z-50">
         <div className="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
           <Link href="/" className="font-headline text-2xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
-            The Elevated Explorer
+            Board Musafir
           </Link>
           <div className="hidden md:flex items-center gap-8 font-headline font-medium text-sm">
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/itineraries/builder">AI Builder</Link>

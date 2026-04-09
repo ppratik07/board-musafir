@@ -9,7 +9,7 @@ export default function SearchResultsPage() {
       <header className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none docked full-width top-0 sticky z-50">
         <div className="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
           <Link href="/" className="font-headline text-2xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
-            The Elevated Explorer
+            Board Musafir
           </Link>
           <nav className="hidden md:flex gap-8 items-center">
             <Link className="font-headline font-medium text-sm text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/itineraries/builder">AI Builder</Link>
@@ -46,14 +46,14 @@ export default function SearchResultsPage() {
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Departure</label>
                 <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="London (LHR)" type="text" />
+                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Mumbai (BOM)" type="text" />
                   <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40" data-icon="location_on">location_on</span>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Destination</label>
                 <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Tokyo (HND)" type="text" />
+                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Delhi (DEL)" type="text" />
                   <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40" data-icon="explore">explore</span>
                 </div>
               </div>
@@ -80,8 +80,8 @@ export default function SearchResultsPage() {
               <div className="space-y-4">
                 <input className="w-full accent-primary bg-surface-container-high h-1 rounded-lg appearance-none cursor-pointer" type="range" />
                 <div className="flex justify-between font-label text-xs font-semibold text-on-surface-variant">
-                  <span>$450</span>
-                  <span>$3,200+</span>
+                  <span>₹4500</span>
+                  <span>₹3,2000+</span>
                 </div>
               </div>
             </div>
@@ -116,7 +116,7 @@ export default function SearchResultsPage() {
                 <span className="font-label text-xs font-bold tracking-widest uppercase">Curator's Tip</span>
               </div>
               <p className="text-sm text-on-surface-variant leading-relaxed italic">
-                "Booking mid-week flights to Tokyo often unlocks access to smaller boutique carrier codeshare seats."
+                "Booking mid-week flights to Delhi often unlocks access to smaller boutique carrier codeshare seats."
               </p>
             </div>
           </motion.aside>
@@ -124,7 +124,7 @@ export default function SearchResultsPage() {
           {/* Results Section */}
           <section className="flex-1">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-headline text-2xl font-bold">18 Flights Found <span className="text-on-surface-variant/40 font-normal text-lg ml-2">from London</span></h2>
+              <h2 className="font-headline text-2xl font-bold">18 Flights Found <span className="text-on-surface-variant/40 font-normal text-lg ml-2">from Mumbai</span></h2>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-on-surface-variant/70 uppercase tracking-widest">Sort by:</span>
                 <select className="bg-transparent border-none font-label text-sm font-bold text-primary focus:ring-0 cursor-pointer">
@@ -137,9 +137,9 @@ export default function SearchResultsPage() {
             
             <div className="space-y-6">
               {[ 
-                { id: 1, airline: "Japan Airlines", operated: "Operated by British Airways", price: "$1,284", icon: "airlines", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBcR3dVrJQ5CODg1-DokuY7S1XoHlPOAzJMQ6af3IdP26dAqCc4FxNOaowE-AozkdU-VhGM6bgPSA0J6R2MiGy7HJQdE-eXz-o9NjPrVxc_9xneepUP2iHRfdxU5MYYqaxOiRRGpiAEBvm0CMOuq1k7CN7ZQMHPL8dfFTKcRkT5ExHEHQr7wfA_ptGoqYmKF3EjdBklezDyrQNSeuiiQ1uEr4BhLoFHc50UyfXCte6gxi1rzxE85gAFUZB5VPxwiggNLEd55YBqWRE" },
-                { id: 2, airline: "Qatar Airways", operated: "5-Star Carrier", price: "$942", icon: "flight", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAv0rMKrGHmZ413vbZfLaQj4_MmVzBURqlcBtKE79owvc_fch9SWOVh5iel5yfIKTX_AatyEmpdvjezSVKIpOKnvbu-OzL6A6ciIwPwYmScR5qNPEPXR8myn_TVvscFLrJPPF5SpOdCv3DSSvIu4J8CyoIYot6OKlN-4fFaKAt8NFtb9ixmG99QUJ2N6lcnwoRFzJTwdvM_8Wy5WLMXuwSDz58jHmuh-ulPN6kzfXmqCt6UOXJRcLU9fzF4a11gA1UdXMtW08H2Vkc" },
-                { id: 3, airline: "Emirates Boutique", operated: "Curator's Choice", price: "$1,150", icon: "star_half", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAk7QNRWe5gBtlkxPb0Mq6Sggzl6gYd5WDHGCkJlos_ocOTKXO-SyaW9Cn1lziDIbNC8lbVsjxn1XgZiknYRbKPtX0F9NFrB0RVzQIlsqo_IZghfabWwruKdNpg72mX3xsrjnF9cssduBDHUh_gn8uRT01zpLSyrH88xNO93zqKm6mIOcoMCJetyKlcWbFVHS0WYHsefmUaxbOKEV6qzCnpxIKSoUUDfmKghxpvEAbRP4CFCZ9eH0roQY9CgdrD8E_JemKVW4yhYf4" }
+                { id: 1, airline: "Air India", operated: "Operated by Vistara", price: "₹1,2840", icon: "airlines", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBcR3dVrJQ5CODg1-DokuY7S1XoHlPOAzJMQ6af3IdP26dAqCc4FxNOaowE-AozkdU-VhGM6bgPSA0J6R2MiGy7HJQdE-eXz-o9NjPrVxc_9xneepUP2iHRfdxU5MYYqaxOiRRGpiAEBvm0CMOuq1k7CN7ZQMHPL8dfFTKcRkT5ExHEHQr7wfA_ptGoqYmKF3EjdBklezDyrQNSeuiiQ1uEr4BhLoFHc50UyfXCte6gxi1rzxE85gAFUZB5VPxwiggNLEd55YBqWRE" },
+                { id: 2, airline: "Vistara Premium", operated: "5-Star Carrier", price: "₹9420", icon: "flight", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAv0rMKrGHmZ413vbZfLaQj4_MmVzBURqlcBtKE79owvc_fch9SWOVh5iel5yfIKTX_AatyEmpdvjezSVKIpOKnvbu-OzL6A6ciIwPwYmScR5qNPEPXR8myn_TVvscFLrJPPF5SpOdCv3DSSvIu4J8CyoIYot6OKlN-4fFaKAt8NFtb9ixmG99QUJ2N6lcnwoRFzJTwdvM_8Wy5WLMXuwSDz58jHmuh-ulPN6kzfXmqCt6UOXJRcLU9fzF4a11gA1UdXMtW08H2Vkc" },
+                { id: 3, airline: "IndiGo Luxe", operated: "Curator's Choice", price: "₹1,1500", icon: "star_half", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAk7QNRWe5gBtlkxPb0Mq6Sggzl6gYd5WDHGCkJlos_ocOTKXO-SyaW9Cn1lziDIbNC8lbVsjxn1XgZiknYRbKPtX0F9NFrB0RVzQIlsqo_IZghfabWwruKdNpg72mX3xsrjnF9cssduBDHUh_gn8uRT01zpLSyrH88xNO93zqKm6mIOcoMCJetyKlcWbFVHS0WYHsefmUaxbOKEV6qzCnpxIKSoUUDfmKghxpvEAbRP4CFCZ9eH0roQY9CgdrD8E_JemKVW4yhYf4" }
               ].map((flight, i) => (
                 <motion.div key={flight.id} initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="bg-surface-container-lowest luxury-shadow rounded-2xl overflow-hidden group hover:scale-[1.005] transition-all duration-300">
                   <div className="flex flex-col md:flex-row">
@@ -165,7 +165,7 @@ export default function SearchResultsPage() {
                       <div className="grid grid-cols-3 gap-8 items-center py-6 border-y border-outline-variant/10">
                         <div>
                           <p className="text-2xl font-bold">11:40</p>
-                          <p className="text-sm text-on-surface-variant">LHR · London</p>
+                          <p className="text-sm text-on-surface-variant">BOM · Mumbai</p>
                         </div>
                         <div className="flex flex-col items-center">
                           <p className="text-[10px] font-bold text-on-surface-variant/60 tracking-widest uppercase mb-1">14h 25m</p>
@@ -176,7 +176,7 @@ export default function SearchResultsPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-bold">09:05</p>
-                          <p className="text-sm text-on-surface-variant">HND · Tokyo</p>
+                          <p className="text-sm text-on-surface-variant">DEL · Delhi</p>
                         </div>
                       </div>
                       <div className="flex justify-between items-center mt-6">
@@ -214,7 +214,7 @@ export default function SearchResultsPage() {
       <footer className="bg-stone-100 dark:bg-zinc-900 full-width border-t-0 flat no shadows mt-20">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 px-12 py-16 w-full max-w-screen-2xl mx-auto">
           <div className="font-headline text-lg font-semibold text-stone-800 dark:text-stone-200">
-            The Elevated Explorer
+            Board Musafir
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <Link className="font-body text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Journal</Link>
@@ -223,7 +223,7 @@ export default function SearchResultsPage() {
             <Link className="font-body text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Terms of Service</Link>
           </div>
           <div className="font-body text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 text-center md:text-right">
-            © 2026 The Elevated Explorer. A Digital Curator Experience.
+            © 2026 Board Musafir. A Digital Curator Experience.
           </div>
         </div>
       </footer>

@@ -9,7 +9,7 @@ export default function Home() {
       <header className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none docked full-width top-0 sticky z-50 transition-all">
         <nav className="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
           <div className="font-headline text-2xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
-            The Elevated Explorer
+            Board Musafir
           </div>
           <div className="hidden md:flex items-center space-x-10 font-headline font-medium text-sm">
             <Link className="text-emerald-800 dark:text-emerald-400 border-b-2 border-emerald-800 dark:border-emerald-400 pb-1 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors Active: scale-95 duration-150 ease-in-out" href="#">AI Builder</Link>
@@ -33,9 +33,9 @@ export default function Home() {
             <img alt="Remote Destination" className="w-full h-full object-cover scale-105" data-alt="Stunning panoramic view" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAP0tc47QGI10dCfaP1qErYHPlWBhTuTsMfYSuVniCPWZemxIeH-e8TgRXvVVYy3IXcRTFq-1FlA7KHGSfQGzRG-gC6_fne-1pXlxJpdagTpOelUYmifCdj0BpJTYe1F1C0JSuRW_Ev5c6luyhEbq-kIyaMqZ0ixNGkCq-Dasl_PjNVVjs2QDSltoPpj7wYcRgK4sTJltXkOQCuA5XftQdubB57KbzXSBV5RwjA4kFaJklOgVyBE6pZ8cJ9uvap-ojAG1BJ9CFMrUs" />
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-surface"></div>
           </div>
-          
+
           <div className="relative z-10 w-full max-w-screen-2xl mx-auto px-8 grid lg:grid-cols-2 gap-12 items-center">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
@@ -51,7 +51,7 @@ export default function Home() {
             </motion.div>
 
             {/* AI Smart Itinerary Builder Widget */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -101,9 +101,9 @@ export default function Home() {
               Explore All <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="east">east</span>
             </Link>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 h-[800px]">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -118,7 +118,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -133,11 +133,11 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div 
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ delay: 0.4 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
               className="md:col-span-4 group relative rounded-3xl overflow-hidden cursor-pointer"
             >
               <img alt="Maldives" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7PPBbse7qpFF_h0wyzXqwDMliM4Zs4aSTb_MixnvcYdZHjOiHLsLyOmNl5rfjKrpAGgj_WOOBQa1Aw5WqNu8EVMAMexJxIGsIcYHO51cD_seujVs7ISke5MWO0Our1xx7gg4kv5zP8bul2EolFlWvYTCobbyWmOqdM-eOBsBZGLP7M8-didFzgRcw17t5djFPT-S0Q7rtE68xEoXJ2JtoSKHFQQ-lk5D4unahq-fEhvEdKJHM7pG-Onz1W8i_i54fKvtsOXVq38g" />
@@ -148,11 +148,11 @@ export default function Home() {
               </div>
             </motion.div>
 
-            <motion.div 
-               initial={{ opacity: 0, y: 20 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true }}
-               transition={{ delay: 0.6 }}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6 }}
               className="md:col-span-8 group relative rounded-3xl overflow-hidden cursor-pointer"
             >
               <img alt="Alps" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDaXuhmMnWESbFLpsjyaGGuXicaFi2_GO0sQDIDWwet4oMSMyHdqK4rLRpMJdU5RJC8gb_Eg1yHZI2KUafofwxHOvaumBKl0OqyI6qy3AJmd487qpANf-MU0dPRuJVJ25OqPgeIf4tweiONUwp5sniH0U0rWG_4hGUYYjIOIyZrwLCH2Hjw3rz8UZvSYMp3K3hmW8COJ92sz52EMZtF5odRx2-yj7DSf3A0eF5IumYbt9cE3vp_lZRc0rXrU_8IHgldXAkx3_wGkzw" />
@@ -170,7 +170,7 @@ export default function Home() {
         <section className="bg-surface-container-low py-32 overflow-hidden">
           <div className="max-w-screen-2xl mx-auto px-8">
             <div className="grid lg:grid-cols-2 gap-20 items-center">
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -181,8 +181,8 @@ export default function Home() {
                 </div>
                 <div className="absolute -top-12 -left-12 w-64 h-64 bg-secondary-container/20 rounded-full blur-3xl z-0"></div>
                 <div className="absolute -bottom-12 -right-12 w-80 h-80 bg-primary-container/20 rounded-full blur-3xl z-0"></div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
@@ -194,7 +194,7 @@ export default function Home() {
                 </motion.div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
@@ -205,7 +205,7 @@ export default function Home() {
                   <h2 className="font-headline text-5xl md:text-6xl text-on-surface leading-tight">Curated Experiences that Linger</h2>
                 </div>
                 <p className="font-body text-xl text-on-surface-variant leading-relaxed">
-                  We don't just find hotels; we source moments. From private tea ceremonies in Kyoto to midnight treks in the Atacama, our digital curators map experiences that change your perspective.
+                  We don't just find hotels; we source moments. From private tea ceremonies in Jaipur to midnight treks in the Atacama, our digital curators map experiences that change your perspective.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-4">
                   <div className="space-y-3">
@@ -233,7 +233,7 @@ export default function Home() {
 
         {/* Travel Diaries */}
         <section className="py-32 px-8 max-w-screen-2xl mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -245,12 +245,12 @@ export default function Home() {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-12">
-            {[ 
+            {[
               { title: "The Silent Majesty of Wadi Rum: A Nomad's Perspective", tag: "Adventure", date: "June 12, 2024", author: "Julian Voss", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCczH-n2VmGxF9Xz6xIwnxDW451cHPW_BqSQ5rfURB9UcxjVIIvSLwovT_9B-cSFm6T6vqce1PrYEdQfIicTn3-rGCA3KFwlNgqA2gWWbtnbtGqm-KVujlan0dMp1O9YsehgNpa0UdH_DYcrSN9eEQlQYFz0alI9cFB7gZsdsHuprLokOsRYLc5r8PesF9O1JQf8z_G9zjwPAMIMfVfYVD-bnX6gHXu_FJ9Xruy1lrRAGmOLnCL8zMCpUhVAT8WEgvjd0oiQ2rCOlc" },
               { title: "Eco-Retreats: Where Luxury Meets Conscience in Bali", tag: "Sustainability", date: "May 28, 2024", author: "Elena Rossi", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAKqqsKZ2v3HyuY0BK8c-eoz0NMk8RYlulVzz1ev0QmwChqF3OusRAcsgPQFMKAVWJg_4GJ5yOKKO8l1UsmNk3E8X9sJ1xmAmchnU7NFbSDwd-vS8PpvJ3m8WVAOreaLHfXhsneDNH0fx0Ubgcgnkv9EBl8begafWzwfy3ts7GRouhOZ5Q1yggyvtwLOm6C8RctztzICYMU905GZV1U2l8iwbr-Qc17aeeVVt13jJ1HAOagyJJAkVrb4xhQRr1xvYXpVKJI2FWt-8g" },
-              { title: "The Architecture of Flavor: Kyoto's Kaiseki Tradition", tag: "Culinary", date: "May 15, 2024", author: "Marcus Chen", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAU4ZGiwXv9AxdfQgmFJC83tTTHZxoRERxPYX53yORy7Ecmuc5uhQxAVkm93QW4OjKWBIr7Kan-gTrTdAAUs7NBTeKP9aSiUilDi4E3isNRn_cRg5pSG3I1onTWiAUOLYaEWanzeiIjOnFAKe60wOuTZk4SYTfHDpdjqjgW5Ogy8qccW3LA_G1SFVF4MYq7fAP7Qo0ldtfB4A1BVmdsZv4hNgD8F9jqVo8HQHJ7lO24Qg-tWWALvgi_xhDL0Q0PFqbKkd_w-9i2Bgw" }
+              { title: "The Architecture of Flavor: Jaipur's Kaiseki Tradition", tag: "Culinary", date: "May 15, 2024", author: "Marcus Chen", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAU4ZGiwXv9AxdfQgmFJC83tTTHZxoRERxPYX53yORy7Ecmuc5uhQxAVkm93QW4OjKWBIr7Kan-gTrTdAAUs7NBTeKP9aSiUilDi4E3isNRn_cRg5pSG3I1onTWiAUOLYaEWanzeiIjOnFAKe60wOuTZk4SYTfHDpdjqjgW5Ogy8qccW3LA_G1SFVF4MYq7fAP7Qo0ldtfB4A1BVmdsZv4hNgD8F9jqVo8HQHJ7lO24Qg-tWWALvgi_xhDL0Q0PFqbKkd_w-9i2Bgw" }
             ].map((post, i) => (
-              <motion.div 
+              <motion.div
                 key={i}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -294,7 +294,7 @@ export default function Home() {
       <footer className="bg-stone-100 dark:bg-zinc-900 full-width border-t-0 flat no shadows py-16 px-12">
         <div className="max-w-screen-2xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="font-headline text-lg font-semibold text-stone-800 dark:text-stone-200">
-            The Elevated Explorer
+            Board Musafir
           </div>
           <div className="flex flex-wrap justify-center gap-8 font-body text-xs uppercase tracking-widest">
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Journal</Link>
@@ -303,7 +303,7 @@ export default function Home() {
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Terms of Service</Link>
           </div>
           <div className="text-emerald-800 dark:text-emerald-400 font-body text-xs uppercase tracking-widest text-center md:text-right">
-            © 2026 The Elevated Explorer. A Digital Curator Experience.
+            © 2026 Board Musafir. A Digital Curator Experience.
           </div>
         </div>
       </footer>

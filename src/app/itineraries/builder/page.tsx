@@ -9,7 +9,7 @@ export default function AIBuilderPage() {
       <nav className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none docked full-width top-0 sticky z-50">
         <div className="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
           <Link href="/" className="font-headline text-2xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
-            The Elevated Explorer
+            Board Musafir
           </Link>
           <div className="hidden md:flex gap-8 items-center font-headline font-medium text-sm">
             <Link className="text-emerald-800 dark:text-emerald-400 border-b-2 border-emerald-800 dark:border-emerald-400 pb-1 transition-colors" href="#">AI Builder</Link>
@@ -125,7 +125,7 @@ export default function AIBuilderPage() {
 
             <div className="bg-surface-container-lowest rounded-3xl shadow-xl p-8 space-y-6 relative border border-outline-variant/10">
               <div className="space-y-2">
-                <h3 className="font-headline text-3xl font-bold">Tuscany & Umbria</h3>
+                <h3 className="font-headline text-3xl font-bold">Kerala Backwaters</h3>
                 <p className="font-label text-sm text-secondary font-bold">12 Days • September 2024</p>
               </div>
               <div className="space-y-8 pt-4">
@@ -136,7 +136,7 @@ export default function AIBuilderPage() {
                   </div>
                   <div className="pb-4">
                     <p className="font-label text-xs font-bold text-stone-400 uppercase">Day 1-3</p>
-                    <h4 className="font-headline font-semibold text-lg">Florence Arrival</h4>
+                    <h4 className="font-headline font-semibold text-lg">Kochi Arrival</h4>
                     <p className="font-body text-sm text-on-surface-variant">Artisan workshop tours & sunset over Ponte Vecchio.</p>
                   </div>
                 </div>
@@ -147,7 +147,7 @@ export default function AIBuilderPage() {
                   </div>
                   <div className="pb-4">
                     <p className="font-label text-xs font-bold text-stone-400 uppercase">Day 4-6</p>
-                    <h4 className="font-headline font-semibold text-lg">Chianti Hills</h4>
+                    <h4 className="font-headline font-semibold text-lg">Munnar Plantations</h4>
                     <p className="font-body text-sm text-on-surface-variant italic">Refining based on your interest: History & Mid-range Boutique.</p>
                     <div className="mt-3 flex gap-2">
                       <span className="px-3 py-1 bg-surface-container-low text-[10px] font-label font-bold rounded-full text-primary">VINEYARDS</span>
@@ -177,7 +177,7 @@ export default function AIBuilderPage() {
       <footer className="bg-stone-100 dark:bg-zinc-900 border-t-0 full-width">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 px-12 py-16 w-full max-w-screen-2xl mx-auto">
           <div className="font-headline text-lg font-semibold text-stone-800 dark:text-stone-200">
-            The Elevated Explorer
+            Board Musafir
           </div>
           <div className="flex flex-wrap justify-center gap-8 font-body text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400">
             <Link className="hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity" href="#">Journal</Link>
@@ -186,7 +186,7 @@ export default function AIBuilderPage() {
             <Link className="hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity" href="#">Terms of Service</Link>
           </div>
           <div className="font-body text-xs uppercase tracking-widest text-stone-500 dark:text-stone-400 text-center md:text-right">
-            © 2026 The Elevated Explorer. A Digital Curator Experience.
+            © 2026 Board Musafir. A Digital Curator Experience.
           </div>
         </div>
       </footer>

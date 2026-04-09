@@ -9,7 +9,7 @@ export default function ItineraryOverviewPage() {
       <nav className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none fixed top-0 w-full z-50">
         <div className="flex justify-between items-center px-8 py-4 w-full max-w-screen-2xl mx-auto">
           <Link href="/" className="font-headline text-2xl font-bold tracking-tight text-emerald-900 dark:text-emerald-100">
-            The Elevated Explorer
+            Board Musafir
           </Link>
           <div className="hidden md:flex items-center gap-8 font-headline font-medium text-sm">
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/itineraries/builder">AI Builder</Link>
@@ -73,8 +73,8 @@ export default function ItineraryOverviewPage() {
                 <div className="flex-grow grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
                   <div>
                     <p className="font-label text-[10px] uppercase tracking-widest text-on-surface-variant mb-1">Departure</p>
-                    <p className="font-bold text-lg">LHR 08:45</p>
-                    <p className="text-sm text-on-surface-variant">London Heathrow</p>
+                    <p className="font-bold text-lg">BOM 08:45</p>
+                    <p className="text-sm text-on-surface-variant">Mumbai Heathrow</p>
                   </div>
                   <div className="hidden md:flex flex-col items-center justify-center">
                     <div className="w-full flex items-center gap-2">
@@ -180,25 +180,25 @@ export default function ItineraryOverviewPage() {
                 <div className="space-y-6 mb-10">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-on-surface-variant">Flights (Premium Econ)</span>
-                    <span className="font-semibold">£1,240.00</span>
+                    <span className="font-semibold">₹1,2400.00</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-on-surface-variant">Luxury Stays (6 Nights)</span>
-                    <span className="font-semibold">£2,150.00</span>
+                    <span className="font-semibold">₹2,1500.00</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-on-surface-variant">Curated Activities</span>
-                    <span className="font-semibold">£860.00</span>
+                    <span className="font-semibold">₹8600.00</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-on-surface-variant">Private Chauffeur</span>
-                    <span className="font-semibold">£420.00</span>
+                    <span className="font-semibold">₹4200.00</span>
                   </div>
                   <div className="h-px bg-outline-variant/30 my-4"></div>
                   <div className="flex justify-between items-end">
                     <div>
                       <p className="text-[10px] uppercase font-bold text-on-surface-variant tracking-widest">Total Price</p>
-                      <p className="font-headline text-4xl text-primary">£4,670</p>
+                      <p className="font-headline text-4xl text-primary">₹4,6700</p>
                     </div>
                     <p className="text-xs text-on-surface-variant text-right">Inc. taxes & fees</p>
                   </div>
@@ -243,8 +243,8 @@ export default function ItineraryOverviewPage() {
       <footer className="bg-stone-100 dark:bg-zinc-900 mt-20">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6 px-12 py-16 w-full max-w-screen-2xl mx-auto">
           <div className="space-y-2">
-            <span className="font-headline text-lg font-semibold text-stone-800 dark:text-stone-200">The Elevated Explorer</span>
-            <p className="font-body text-[10px] uppercase tracking-widest text-stone-500 dark:text-stone-400">© 2026 The Elevated Explorer. A Digital Curator Experience.</p>
+            <span className="font-headline text-lg font-semibold text-stone-800 dark:text-stone-200">Board Musafir</span>
+            <p className="font-body text-[10px] uppercase tracking-widest text-stone-500 dark:text-stone-400">© 2026 Board Musafir. A Digital Curator Experience.</p>
           </div>
           <div className="flex flex-wrap justify-center gap-8 font-body text-xs uppercase tracking-widest">
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity" href="#">Journal</Link>

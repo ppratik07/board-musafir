@@ -18,7 +18,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "The Elevated Explorer | Digital Curator Experience",
+  title: "Board Musafir | Digital Curator Experience",
   description: "Curated by AI, Refined by You.",
 };
 
