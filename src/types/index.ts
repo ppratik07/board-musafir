@@ -358,3 +358,65 @@ export class NotFoundError extends AppError {
     super(message, 404);
   }
 }
+
+// SERP API Hotel Search Types
+export interface SerpHotelSearchResult {
+  id: string;
+  name: string;
+  description?: string;
+  type: string;
+  location: {
+    address: string;
+    coordinates?: {
+      latitude: number;
+      longitude: number;
+    };
+  };
+  images: string[];
+  thumbnail?: string;
+  pricePerNight: {
+    amount: number;
+    currency: string;
+    display: string;
+  };
+  totalPrice: {
+    amount: number;
+    currency: string;
+    display: string;
+  };
+  rating: {
+    overall?: number;
+    reviews?: number;
+    starClass?: number;
+  };
+  amenities: string[];
+  checkInTime?: string;
+  checkOutTime?: string;
+  nearbyPlaces?: Array<{
+    name: string;
+    transportations: Array<{
+      type: string;
+      duration: string;
+    }>;
+  }>;
+  bookingLink: string;
+  propertyToken?: string;
+}
+
+export interface HotelSearchResponse {
+  hotels: SerpHotelSearchResult[];
+  total: number;
+  searchParams: {
+    destination: string;
+    checkIn: string;
+    checkOut: string;
+    adults: number;
+    children?: number;
+  };
+  metadata?: {
+    id: string;
+    status: string;
+    total_time_taken: number;
+  };
+}
+

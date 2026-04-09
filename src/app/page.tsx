@@ -2,8 +2,86 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    destination: "",
+    startDate: "",
+    endDate: "",
+    travelers: "Solo Explorer"
+  });
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
+  const handleGenerateJourney = async () => {
+    const newErrors: { [key: string]: string } = {};
+
+    if (!formData.destination.trim()) {
+      newErrors.destination = "Please enter a destination";
+    }
+    if (!formData.startDate || !formData.endDate) {
+      newErrors.dates = "Please select dates";
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsGenerating(true);
+
+    try {
+      // Call AI API to generate itinerary
+      const response = await fetch('/api/itinerary/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          destination: formData.destination,
+          startDate: formData.startDate,
+          endDate: formData.endDate,
+          travelers: formData.travelers,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Store the generated itinerary
+        localStorage.setItem('generatedItinerary', JSON.stringify(data.data));
+        localStorage.setItem('itinerarySource', data.source || 'ai');
+        
+        // Navigate to builder page
+        const params = new URLSearchParams({
+          destination: formData.destination,
+          dates: `${formData.startDate} to ${formData.endDate}`,
+          travelers: formData.travelers
+        });
+        router.push(`/itineraries/builder?${params.toString()}`);
+      } else {
+        setErrors({ destination: data.error || 'Failed to generate itinerary' });
+      }
+    } catch (error) {
+      console.error('Error generating itinerary:', error);
+      setErrors({ destination: 'Network error. Please try again.' });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <>
       <header className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none docked full-width top-0 sticky z-50 transition-all">
@@ -12,16 +90,20 @@ export default function Home() {
             Board Musafir
           </div>
           <div className="hidden md:flex items-center space-x-10 font-headline font-medium text-sm">
-            <Link className="text-emerald-800 dark:text-emerald-400 border-b-2 border-emerald-800 dark:border-emerald-400 pb-1 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors Active: scale-95 duration-150 ease-in-out" href="#">AI Builder</Link>
-            <Link className="text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="#">Flights</Link>
-            <Link className="text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="#">Hotels</Link>
-            <Link className="text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="#">Activities</Link>
+            <Link className="text-emerald-800 dark:text-emerald-400 border-b-2 border-emerald-800 dark:border-emerald-400 pb-1 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors Active: scale-95 duration-150 ease-in-out" href="/itineraries/create">AI Builder</Link>
+            <Link className="text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/search?type=flights">Flights</Link>
+            <Link className="text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/hotels">Hotels</Link>
+            <Link className="text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/activities">Activities</Link>
           </div>
           <div className="flex items-center gap-4">
-            <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-full font-label font-semibold text-sm hover:opacity-90 transition-opacity shadow-md">
-              Book Now
-            </button>
-            <span className="material-symbols-outlined text-emerald-800 cursor-pointer text-3xl" data-icon="account_circle">account_circle</span>
+            <Link href="/search">
+              <button className="bg-gradient-to-r from-primary to-primary-container text-on-primary px-6 py-2.5 rounded-full font-label font-semibold text-sm hover:opacity-90 transition-opacity shadow-md">
+                Book Now
+              </button>
+            </Link>
+            <Link href="/auth/login">
+              <span className="material-symbols-outlined text-emerald-800 cursor-pointer text-3xl hover:opacity-80 transition-opacity" data-icon="account_circle">account_circle</span>
+            </Link>
           </div>
         </nav>
       </header>
@@ -64,16 +146,49 @@ export default function Home() {
               <div className="space-y-8">
                 <div className="relative group">
                   <label className="block font-label text-xs uppercase tracking-widest text-primary font-bold mb-2">Where to?</label>
-                  <input className="w-full bg-transparent border-b-2 border-outline-variant/40 py-3 focus:outline-none focus:border-primary transition-all font-body text-lg" placeholder="Dream destination..." type="text" />
+                  <input 
+                    name="destination"
+                    value={formData.destination}
+                    onChange={handleInputChange}
+                    className={`w-full bg-transparent border-b-2 ${errors.destination ? 'border-red-500' : 'border-outline-variant/40'} py-3 focus:outline-none focus:border-primary transition-all font-body text-lg`} 
+                    placeholder="Dream destination..." 
+                    type="text" 
+                  />
+                  {errors.destination && <p className="text-red-500 text-xs mt-1">{errors.destination}</p>}
                 </div>
                 <div className="grid grid-cols-2 gap-8">
                   <div className="relative group">
                     <label className="block font-label text-xs uppercase tracking-widest text-primary font-bold mb-2">When?</label>
-                    <input className="w-full bg-transparent border-b-2 border-outline-variant/40 py-3 focus:outline-none focus:border-primary transition-all font-body text-lg" placeholder="Select dates" type="text" />
+                    <div className="space-y-3">
+                      <input 
+                        name="startDate"
+                        value={formData.startDate}
+                        onChange={handleInputChange}
+                        className={`w-full bg-transparent border-b-2 ${errors.dates ? 'border-red-500' : 'border-outline-variant/40'} py-3 focus:outline-none focus:border-primary transition-all font-body text-base`} 
+                        placeholder="Start date" 
+                        type="date"
+                        min={new Date().toISOString().split('T')[0]}
+                      />
+                      <input 
+                        name="endDate"
+                        value={formData.endDate}
+                        onChange={handleInputChange}
+                        className={`w-full bg-transparent border-b-2 ${errors.dates ? 'border-red-500' : 'border-outline-variant/40'} py-3 focus:outline-none focus:border-primary transition-all font-body text-base`} 
+                        placeholder="End date" 
+                        type="date"
+                        min={formData.startDate || new Date().toISOString().split('T')[0]}
+                      />
+                    </div>
+                    {errors.dates && <p className="text-red-500 text-xs mt-1">{errors.dates}</p>}
                   </div>
                   <div className="relative group">
-                    <label className="block font-label text-xs uppercase tracking-widest text-primary font-bold mb-2">Who's going?</label>
-                    <select className="w-full bg-transparent border-b-2 border-outline-variant/40 py-3 focus:outline-none focus:border-primary transition-all font-body text-lg appearance-none">
+                    <label className="block font-label text-xs uppercase tracking-widest text-primary font-bold mb-2">Who&apos;s going?</label>
+                    <select 
+                      name="travelers"
+                      value={formData.travelers}
+                      onChange={handleInputChange}
+                      className="w-full bg-transparent border-b-2 border-outline-variant/40 py-3 focus:outline-none focus:border-primary transition-all font-body text-lg appearance-none"
+                    >
                       <option>Solo Explorer</option>
                       <option>Couple</option>
                       <option>Family</option>
@@ -81,9 +196,23 @@ export default function Home() {
                     </select>
                   </div>
                 </div>
-                <button className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-5 rounded-full font-label font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
-                  Generate My Journey
-                  <span className="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+                <button 
+                  onClick={handleGenerateJourney}
+                  type="button"
+                  disabled={isGenerating}
+                  className="w-full bg-gradient-to-r from-primary to-primary-container text-white py-5 rounded-full font-label font-bold text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  {isGenerating ? (
+                    <>
+                      <span className="animate-spin material-symbols-outlined" data-icon="progress_activity">progress_activity</span>
+                      Generating Your Journey...
+                    </>
+                  ) : (
+                    <>
+                      Generate My Journey
+                      <span className="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+                    </>
+                  )}
                 </button>
               </div>
             </motion.div>
@@ -97,7 +226,7 @@ export default function Home() {
               <span className="text-secondary font-label font-bold tracking-[0.2em] uppercase text-xs">Global Favorites</span>
               <h2 className="font-headline text-4xl md:text-5xl text-on-surface">Trending Itineraries</h2>
             </div>
-            <Link className="text-tertiary font-label font-bold flex items-center gap-2 group" href="#">
+            <Link className="text-tertiary font-label font-bold flex items-center gap-2 group" href="/itineraries">
               Explore All <span className="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="east">east</span>
             </Link>
           </div>
@@ -270,7 +399,7 @@ export default function Home() {
                   </div>
                   <h3 className="font-headline text-2xl font-bold group-hover:text-primary transition-colors leading-snug">{post.title}</h3>
                   <p className="font-body text-on-surface-variant text-sm line-clamp-3">A journey into the heart of travel's most profound experiences.</p>
-                  <Link href="#" className="inline-block border-b border-primary text-primary font-label text-sm font-bold pb-1 hover:text-secondary hover:border-secondary transition-all">Read Diary</Link>
+                  <a href="https://owlous.in" target="_blank" rel="noopener noreferrer" className="inline-block border-b border-primary text-primary font-label text-sm font-bold pb-1 hover:text-secondary hover:border-secondary transition-all">Read Diary</a>
                 </div>
               </motion.div>
             ))}
@@ -297,10 +426,10 @@ export default function Home() {
             Board Musafir
           </div>
           <div className="flex flex-wrap justify-center gap-8 font-body text-xs uppercase tracking-widest">
-            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Journal</Link>
-            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Sustainability</Link>
-            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Verified Reviews</Link>
-            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="#">Terms of Service</Link>
+            <a className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="https://owlous.in" target="_blank" rel="noopener noreferrer">Journal</a>
+            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="/about/sustainability">Sustainability</Link>
+            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="/reviews">Verified Reviews</Link>
+            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-opacity duration-300" href="/legal/terms">Terms of Service</Link>
           </div>
           <div className="text-emerald-800 dark:text-emerald-400 font-body text-xs uppercase tracking-widest text-center md:text-right">
             © 2026 Board Musafir. A Digital Curator Experience.

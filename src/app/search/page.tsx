@@ -2,8 +2,42 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
+
+// Mock flight data - will be replaced with real API later
+const mockFlights = [
+  { id: 1, airline: "Air India", operated: "Operated by Vistara", price: "₹1,2840", totalPrice: 12840, icon: "airlines", departTime: "11:40", arriveTime: "09:05", duration: "14h 25m", stops: 0, image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=600" },
+  { id: 2, airline: "Vistara Premium", operated: "5-Star Carrier", price: "₹9,420", totalPrice: 9420, icon: "flight", departTime: "14:30", arriveTime: "16:45", duration: "2h 15m", stops: 0, image: "https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?q=80&w=600" },
+  { id: 3, airline: "IndiGo", operated: "Budget Carrier", price: "₹5,500", totalPrice: 5500, icon: "flight", departTime: "08:15", arriveTime: "13:30", duration: "5h 15m", stops: 1, image: "https://images.unsplash.com/photo-1583938943351-b919271e31e0?q=80&w=600" },
+  { id: 4, airline: "SpiceJet", operated: "Economy", price: "₹4,800", totalPrice: 4800, icon: "flight", departTime: "19:00", arriveTime: "22:45", duration: "3h 45m", stops: 1, image: "https://images.unsplash.com/photo-1569629743817-70d8db6c323b?q=80&w=600" },
+  { id: 5, airline: "Air Asia", operated: "Low Cost", price: "₹4,200", totalPrice: 4200, icon: "flight", departTime: "06:00", arriveTime: "08:30", duration: "2h 30m", stops: 0, image: "https://images.unsplash.com/photo-1556388158-158ea5ccacbd?q=80&w=600" },
+  { id: 6, airline: "GoAir", operated: "Budget", price: "₹5,100", totalPrice: 5100, icon: "flight", departTime: "16:20", arriveTime: "18:50", duration: "2h 30m", stops: 0, image: "https://images.unsplash.com/photo-1581092160607-ee67e7a44fc3?q=80&w=600" },
+];
 
 export default function SearchResultsPage() {
+  const [departure, setDeparture] = useState("Mumbai (BOM)");
+  const [destination, setDestination] = useState("Delhi (DEL)");
+  const [departDate, setDepartDate] = useState("2026-10-12");
+  const [returnDate, setReturnDate] = useState("2026-10-28");
+  const [flights, setFlights] = useState(mockFlights);
+  const [loading, setLoading] = useState(false);
+  const [sortBy, setSortBy] = useState("curated");
+
+  const searchFlights = () => {
+    setLoading(true);
+    // Simulate API call - replace with real API integration later
+    setTimeout(() => {
+      setFlights(mockFlights);
+      setLoading(false);
+    }, 1000);
+  };
+
+  const sortedFlights = [...flights].sort((a, b) => {
+    if (sortBy === 'price') return a.totalPrice - b.totalPrice;
+    if (sortBy === 'duration') return parseFloat(a.duration) - parseFloat(b.duration);
+    return 0; // curated order
+  });
+  
   return (
     <>
       <header className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none docked full-width top-0 sticky z-50">
@@ -14,8 +48,8 @@ export default function SearchResultsPage() {
           <nav className="hidden md:flex gap-8 items-center">
             <Link className="font-headline font-medium text-sm text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/itineraries/builder">AI Builder</Link>
             <Link className="font-headline font-medium text-sm text-emerald-800 dark:text-emerald-400 border-b-2 border-emerald-800 dark:border-emerald-400 pb-1" href="/search">Flights</Link>
-            <Link className="font-headline font-medium text-sm text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="#">Hotels</Link>
-            <Link className="font-headline font-medium text-sm text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="#">Activities</Link>
+            <Link className="font-headline font-medium text-sm text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/hotels">Hotels</Link>
+            <Link className="font-headline font-medium text-sm text-stone-600 dark:text-stone-400 hover:text-emerald-700 dark:hover:text-emerald-300 transition-colors" href="/activities">Activities</Link>
           </nav>
           <div className="flex items-center gap-6">
             <button className="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors" data-icon="account_circle">account_circle</button>
@@ -33,40 +67,66 @@ export default function SearchResultsPage() {
                 <span className="material-symbols-outlined text-lg" data-icon="flight_takeoff">flight_takeoff</span>
                 Flights
               </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:text-on-surface font-label font-medium text-sm transition-colors">
+              <Link href="/hotels" className="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:text-on-surface font-label font-medium text-sm transition-colors">
                 <span className="material-symbols-outlined text-lg" data-icon="bed">bed</span>
                 Hotels
-              </button>
-              <button className="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:text-on-surface font-label font-medium text-sm transition-colors">
+              </Link>
+              <Link href="/activities" className="flex items-center gap-2 px-4 py-2 text-on-surface-variant hover:text-on-surface font-label font-medium text-sm transition-colors">
                 <span className="material-symbols-outlined text-lg" data-icon="local_activity">local_activity</span>
                 Activities
-              </button>
+              </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Departure</label>
                 <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Mumbai (BOM)" type="text" />
+                  <input 
+                    className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" 
+                    placeholder="Mumbai (BOM)" 
+                    type="text"
+                    value={departure}
+                    onChange={(e) => setDeparture(e.target.value)}
+                  />
                   <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40" data-icon="location_on">location_on</span>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Destination</label>
                 <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Delhi (DEL)" type="text" />
+                  <input 
+                    className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" 
+                    placeholder="Delhi (DEL)" 
+                    type="text"
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                  />
                   <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40" data-icon="explore">explore</span>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Dates</label>
-                <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Oct 12 - Oct 28" type="text" />
-                  <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40" data-icon="calendar_today">calendar_today</span>
+                <div className="flex gap-2">
+                  <input 
+                    className="flex-1 bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all text-sm" 
+                    type="date"
+                    value={departDate}
+                    onChange={(e) => setDepartDate(e.target.value)}
+                  />
+                  <input 
+                    className="flex-1 bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all text-sm" 
+                    type="date"
+                    value={returnDate}
+                    onChange={(e) => setReturnDate(e.target.value)}
+                  />
                 </div>
               </div>
-              <button className="bg-primary hover:bg-primary-container text-white h-[52px] rounded-full flex items-center justify-center gap-2 font-semibold shadow-lg shadow-primary/10 transition-all duration-300 transform hover:scale-[1.02]">
-                <span className="material-symbols-outlined" data-icon="search">search</span>
-                Refine Search
+              <button 
+                onClick={searchFlights}
+                disabled={loading}
+                className="bg-primary hover:bg-primary-container text-white h-[52px] rounded-full flex items-center justify-center gap-2 font-semibold shadow-lg shadow-primary/10 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50"
+              >
+                <span className="material-symbols-outlined" data-icon="search">{loading ? 'hourglass_empty' : 'search'}</span>
+                {loading ? 'Searching...' : 'Refine Search'}
               </button>
             </div>
           </div>
@@ -124,24 +184,36 @@ export default function SearchResultsPage() {
           {/* Results Section */}
           <section className="flex-1">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-headline text-2xl font-bold">18 Flights Found <span className="text-on-surface-variant/40 font-normal text-lg ml-2">from Mumbai</span></h2>
+              <h2 className="font-headline text-2xl font-bold">
+                {loading ? 'Searching...' : `${sortedFlights.length} Flights Found`} 
+                <span className="text-on-surface-variant/40 font-normal text-lg ml-2">from {departure.split('(')[0].trim()}</span>
+              </h2>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-on-surface-variant/70 uppercase tracking-widest">Sort by:</span>
-                <select className="bg-transparent border-none font-label text-sm font-bold text-primary focus:ring-0 cursor-pointer">
-                  <option>Curated Quality</option>
-                  <option>Lowest Price</option>
-                  <option>Fastest Path</option>
+                <select 
+                  className="bg-transparent border-none font-label text-sm font-bold text-primary focus:ring-0 cursor-pointer"
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="curated">Curated Quality</option>
+                  <option value="price">Lowest Price</option>
+                  <option value="duration">Fastest Path</option>
                 </select>
               </div>
             </div>
             
+            {loading && (
+              <div className="flex items-center justify-center py-20">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  <p className="text-on-surface-variant font-medium">Searching flights...</p>
+                </div>
+              </div>
+            )}
+
             <div className="space-y-6">
-              {[ 
-                { id: 1, airline: "Air India", operated: "Operated by Vistara", price: "₹1,2840", icon: "airlines", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuBcR3dVrJQ5CODg1-DokuY7S1XoHlPOAzJMQ6af3IdP26dAqCc4FxNOaowE-AozkdU-VhGM6bgPSA0J6R2MiGy7HJQdE-eXz-o9NjPrVxc_9xneepUP2iHRfdxU5MYYqaxOiRRGpiAEBvm0CMOuq1k7CN7ZQMHPL8dfFTKcRkT5ExHEHQr7wfA_ptGoqYmKF3EjdBklezDyrQNSeuiiQ1uEr4BhLoFHc50UyfXCte6gxi1rzxE85gAFUZB5VPxwiggNLEd55YBqWRE" },
-                { id: 2, airline: "Vistara Premium", operated: "5-Star Carrier", price: "₹9420", icon: "flight", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAv0rMKrGHmZ413vbZfLaQj4_MmVzBURqlcBtKE79owvc_fch9SWOVh5iel5yfIKTX_AatyEmpdvjezSVKIpOKnvbu-OzL6A6ciIwPwYmScR5qNPEPXR8myn_TVvscFLrJPPF5SpOdCv3DSSvIu4J8CyoIYot6OKlN-4fFaKAt8NFtb9ixmG99QUJ2N6lcnwoRFzJTwdvM_8Wy5WLMXuwSDz58jHmuh-ulPN6kzfXmqCt6UOXJRcLU9fzF4a11gA1UdXMtW08H2Vkc" },
-                { id: 3, airline: "IndiGo Luxe", operated: "Curator's Choice", price: "₹1,1500", icon: "star_half", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAk7QNRWe5gBtlkxPb0Mq6Sggzl6gYd5WDHGCkJlos_ocOTKXO-SyaW9Cn1lziDIbNC8lbVsjxn1XgZiknYRbKPtX0F9NFrB0RVzQIlsqo_IZghfabWwruKdNpg72mX3xsrjnF9cssduBDHUh_gn8uRT01zpLSyrH88xNO93zqKm6mIOcoMCJetyKlcWbFVHS0WYHsefmUaxbOKEV6qzCnpxIKSoUUDfmKghxpvEAbRP4CFCZ9eH0roQY9CgdrD8E_JemKVW4yhYf4" }
-              ].map((flight, i) => (
-                <motion.div key={flight.id} initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="bg-surface-container-lowest luxury-shadow rounded-2xl overflow-hidden group hover:scale-[1.005] transition-all duration-300">
+              {!loading && sortedFlights.map((flight, i) => (
+                <motion.div key={flight.id} initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }} className="bg-surface-container-lowest luxury-shadow rounded-2xl overflow-hidden group hover:scale-[1.005] transition-all duration-300">
                   <div className="flex flex-col md:flex-row">
                     <div className="w-full md:w-56 h-48 md:h-auto overflow-hidden">
                       <img alt={flight.airline} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src={flight.image} />
@@ -164,22 +236,22 @@ export default function SearchResultsPage() {
                       </div>
                       <div className="grid grid-cols-3 gap-8 items-center py-6 border-y border-outline-variant/10">
                         <div>
-                          <p className="text-2xl font-bold">11:40</p>
-                          <p className="text-sm text-on-surface-variant">BOM · Mumbai</p>
+                          <p className="text-2xl font-bold">{flight.departTime}</p>
+                          <p className="text-sm text-on-surface-variant">{departure.split('·')[0].trim()}</p>
                         </div>
                         <div className="flex flex-col items-center">
-                          <p className="text-[10px] font-bold text-on-surface-variant/60 tracking-widest uppercase mb-1">14h 25m</p>
+                          <p className="text-[10px] font-bold text-on-surface-variant/60 tracking-widest uppercase mb-1">{flight.duration}</p>
                           <div className="relative w-full h-[2px] bg-outline-variant/30 flex items-center justify-center">
                             <div className="absolute w-2 h-2 rounded-full bg-primary ring-4 ring-primary/10"></div>
                           </div>
-                          <p className="text-[10px] font-bold text-primary mt-1">{flight.id === 1 ? "Direct" : `1 stop`}</p>
+                          <p className="text-[10px] font-bold text-primary mt-1">{flight.stops === 0 ? "Direct" : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-2xl font-bold">09:05</p>
-                          <p className="text-sm text-on-surface-variant">DEL · Delhi</p>
+                          <p className="text-2xl font-bold">{flight.arriveTime}</p>
+                          <p className="text-sm text-on-surface-variant">{destination.split('·')[0].trim()}</p>
                         </div>
                       </div>
-                      <div className="flex justify-between items-center mt-6">
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 sm:justify-between sm:items-center mt-6">
                         <div className="flex gap-4">
                           <span className="flex items-center gap-1 text-xs font-semibold text-on-surface-variant/80">
                             <span className="material-symbols-outlined text-sm" data-icon="luggage">luggage</span>
@@ -191,7 +263,7 @@ export default function SearchResultsPage() {
                           </span>
                         </div>
                         <div className="flex gap-4">
-                          <button className="font-label text-sm font-bold text-on-surface-variant hover:text-primary transition-colors px-4 py-2">View Details</button>
+                          <button className="font-label text-sm font-bold text-on-surface-variant hover:text-primary transition-colors px-4 py-2 border border-outline-variant/30 rounded-full hover:border-primary">View Details</button>
                           <button className="bg-primary hover:bg-primary-container text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-primary/10 transition-all active:scale-95">Select</button>
                         </div>
                       </div>

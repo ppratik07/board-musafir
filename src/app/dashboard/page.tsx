@@ -18,7 +18,7 @@ export default function DashboardPage() {
           <div className="hidden md:flex items-center gap-8 font-headline font-medium text-sm">
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-700 transition-colors" href="/itineraries/builder">AI Builder</Link>
             <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-700 transition-colors" href="/search">Flights</Link>
-            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-700 transition-colors" href="#">Hotels</Link>
+            <Link className="text-stone-500 dark:text-stone-400 hover:text-emerald-700 transition-colors" href="/hotels">Hotels</Link>
           </div>
           <div className="flex items-center gap-4">
             <div className="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline font-bold">

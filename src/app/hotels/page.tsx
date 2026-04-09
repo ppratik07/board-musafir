@@ -2,8 +2,55 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export default function HotelsPage() {
+  const [destination, setDestination] = useState("Jaipur, Rajasthan");
+  const [checkIn, setCheckIn] = useState("2026-05-15");
+  const [checkOut, setCheckOut] = useState("2026-05-18");
+  const [adults, setAdults] = useState(2);
+  const [children, setChildren] = useState(0);
+  const [rooms, setRooms] = useState(1);
+  const [hotels, setHotels] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState(0);
+
+  const searchHotels = async () => {
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const response = await fetch('/api/hotels/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          destination,
+          checkIn,
+          checkOut,
+          adults,
+          children,
+          rooms,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setHotels(data.data.hotels);
+        setTotal(data.data.total);
+      } else {
+        setError(data.error || 'Failed to search hotels');
+      }
+    } catch (err) {
+      setError('Network error. Please try again.');
+      console.error('Search error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <>
       <header className="bg-stone-50/70 dark:bg-zinc-950/70 backdrop-blur-xl shadow-sm dark:shadow-none docked full-width top-0 sticky z-50">
@@ -45,27 +92,63 @@ export default function HotelsPage() {
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Destination</label>
                 <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Jaipur, Rajasthan" type="text" />
+                  <input 
+                    className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" 
+                    placeholder="Delhi, India" 
+                    type="text"
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                  />
                   <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40">location_city</span>
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Check-in / Check-out</label>
-                <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="Nov 12 - Nov 18" type="text" />
-                  <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40">calendar_today</span>
+                <div className="flex gap-2">
+                  <input 
+                    className="flex-1 bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all text-sm" 
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                  />
+                  <input 
+                    className="flex-1 bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all text-sm" 
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                  />
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="font-label text-xs font-bold text-on-surface-variant/70 tracking-wider uppercase">Guests</label>
-                <div className="relative">
-                  <input className="w-full bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all placeholder:text-stone-300" placeholder="2 Adults, 1 Room" type="text" />
-                  <span className="absolute right-0 top-3 material-symbols-outlined text-on-surface-variant/40">group</span>
+                <div className="flex gap-2">
+                  <input 
+                    className="w-20 bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all text-sm" 
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={adults}
+                    onChange={(e) => setAdults(parseInt(e.target.value) || 1)}
+                    placeholder="Adults"
+                  />
+                  <input 
+                    className="w-20 bg-transparent border-b border-outline-variant/40 py-3 font-medium focus:border-primary focus:ring-0 outline-none transition-all text-sm" 
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={children}
+                    onChange={(e) => setChildren(parseInt(e.target.value) || 0)}
+                    placeholder="Kids"
+                  />
                 </div>
               </div>
-              <button className="bg-primary hover:bg-primary-container text-white h-[52px] rounded-full flex items-center justify-center gap-2 font-semibold shadow-lg shadow-primary/10 transition-all duration-300 transform hover:scale-[1.02]">
-                <span className="material-symbols-outlined">search</span>
-                Refine Search
+              <button 
+                onClick={searchHotels}
+                disabled={loading}
+                className="bg-primary hover:bg-primary-container text-white h-[52px] rounded-full flex items-center justify-center gap-2 font-semibold shadow-lg shadow-primary/10 transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <span className="material-symbols-outlined">{loading ? 'hourglass_empty' : 'search'}</span>
+                {loading ? 'Searching...' : 'Refine Search'}
               </button>
             </div>
           </div>
@@ -121,62 +204,114 @@ export default function HotelsPage() {
           {/* Results Section */}
           <section className="flex-1">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="font-headline text-2xl font-bold">24 Properties Found <span className="text-on-surface-variant/40 font-normal text-lg ml-2">in Jaipur</span></h2>
+              <h2 className="font-headline text-2xl font-bold">
+                {loading ? 'Searching...' : error ? 'Search Error' : total > 0 ? `${total} Properties Found` : 'Search for Hotels'} 
+                {destination && total > 0 && <span className="text-on-surface-variant/40 font-normal text-lg ml-2">in {destination}</span>}
+              </h2>
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-on-surface-variant/70 uppercase tracking-widest">Sort by:</span>
                 <select className="bg-transparent border-none font-label text-sm font-bold text-primary focus:ring-0 cursor-pointer">
                   <option>Curated Quality</option>
                   <option>Lowest Price</option>
-                  <option>Distance to Center</option>
+                  <option>Highest Rating</option>
                 </select>
               </div>
             </div>
+
+            {error && (
+              <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
+                <p className="text-red-800 dark:text-red-200 font-medium">{error}</p>
+              </div>
+            )}
+
+            {loading && (
+              <div className="flex items-center justify-center py-20">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  <p className="text-on-surface-variant font-medium">Searching hotels...</p>
+                </div>
+              </div>
+            )}
             
+            {!loading && hotels.length === 0 && !error && (
+              <div className="text-center py-20">
+                <span className="material-symbols-outlined text-6xl text-on-surface-variant/40 mb-4">hotel</span>
+                <p className="text-on-surface-variant text-lg">Click "Refine Search" to find hotels</p>
+              </div>
+            )}
+
             <div className="space-y-6">
-              {[ 
-                { id: 1, name: "Aman Jaipur", operated: "Luxury Resort • 5 Stars", price: "₹1,4500", rating: "9.8", reviews: "124 verified reviews", image: "https://lh3.googleusercontent.com/aida-public/AB6AXuAc-B7s6oE_w6QY7Q9K9W9xXjK_9xV_S8a4D7F4mZQQqQQQXZA_QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ_oZ8xXjK_9xV_S8a4D7F4mZQQqQQQXZA_QQQQQQQQQQQQQQQQQQ" }, /* I'll use real image URLs from unsplash/mock */
-                { id: 2, name: "The Ritz-Carlton, Jaipur", operated: "Premium Luxury • 5 Stars", price: "₹9800", rating: "9.6", reviews: "450 verified reviews", image: "https://images.unsplash.com/photo-1542314831-c6a4d14d8835?q=80&w=2000&auto=format&fit=crop" },
-                { id: 3, name: "Rambagh Palace", operated: "Heritage Palace • 5 Stars", price: "₹1,1200", rating: "9.7", reviews: "210 verified reviews", image: "https://images.unsplash.com/photo-1551882547-ff40c0d13c11?q=80&w=2000&auto=format&fit=crop" }
-              ].map((hotel, i) => (
-                <motion.div key={hotel.id} initial={{ opacity: 0, scale: 0.98 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }} className="bg-surface-container-lowest luxury-shadow rounded-2xl overflow-hidden group hover:scale-[1.005] transition-all duration-300">
+              {hotels.map((hotel, i) => (
+                <motion.div 
+                  key={hotel.id} 
+                  initial={{ opacity: 0, scale: 0.98 }} 
+                  animate={{ opacity: 1, scale: 1 }} 
+                  transition={{ delay: i * 0.1 }} 
+                  className="bg-surface-container-lowest luxury-shadow rounded-2xl overflow-hidden group hover:scale-[1.005] transition-all duration-300"
+                >
                   <div className="flex flex-col md:flex-row">
                     <div className="w-full md:w-64 h-56 md:h-auto overflow-hidden">
-                      <img alt={hotel.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src={i === 0 ? "https://images.unsplash.com/photo-1498503182468-3b51cbb6cb24?q=80&w=2000&auto=format&fit=crop" : hotel.image} />
+                      <img 
+                        alt={hotel.name} 
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                        src={hotel.images?.thumbnail || hotel.images?.main || 'https://images.unsplash.com/photo-1542314831-c6a4d14d8835?q=80&w=600'} 
+                      />
                     </div>
                     <div className="flex-1 p-8">
                       <div className="flex justify-between items-start mb-4">
                         <div>
                           <h4 className="font-headline text-2xl font-bold">{hotel.name}</h4>
-                          <p className="font-label text-xs text-on-surface-variant/60 font-semibold tracking-wide uppercase mt-1">{hotel.operated}</p>
+                          <p className="font-label text-xs text-on-surface-variant/60 font-semibold tracking-wide uppercase mt-1">
+                            {hotel.rating?.starClass && `${hotel.rating.starClass} Stars`} {hotel.type || 'Hotel'}
+                          </p>
+                          {hotel.location?.address && (
+                            <p className="font-label text-xs text-on-surface-variant/80 mt-2">
+                              <span className="material-symbols-outlined text-xs align-middle">location_on</span> {hotel.location.address}
+                            </p>
+                          )}
                         </div>
                         <div className="text-right">
-                          <p className="font-headline text-3xl font-bold text-primary">{hotel.price}</p>
+                          <p className="font-headline text-3xl font-bold text-primary">{hotel.pricePerNight?.display || 'N/A'}</p>
                           <p className="font-label text-[10px] text-on-surface-variant/60 font-bold uppercase tracking-widest mt-1">Per night</p>
+                          {hotel.totalPrice && (
+                            <p className="font-label text-xs text-on-surface-variant/80 mt-1">Total: {hotel.totalPrice.display}</p>
+                          )}
                         </div>
                       </div>
                       
                       <div className="flex items-center gap-2 mb-6">
-                        <div className="w-8 h-8 rounded-md bg-secondary text-white flex items-center justify-center font-bold text-sm">
-                          {hotel.rating}
-                        </div>
-                        <span className="font-label text-xs font-semibold text-on-surface-variant">{hotel.reviews}</span>
+                        {hotel.rating?.overall && (
+                          <>
+                            <div className="w-8 h-8 rounded-md bg-secondary text-white flex items-center justify-center font-bold text-sm">
+                              {hotel.rating.overall}
+                            </div>
+                            <span className="font-label text-xs font-semibold text-on-surface-variant">
+                              {hotel.rating.reviews ? `${hotel.rating.reviews} verified reviews` : 'Highly rated'}
+                            </span>
+                          </>
+                        )}
                       </div>
 
-                      <div className="flex justify-between items-end mt-6 pt-6 border-t border-outline-variant/10">
-                        <div className="flex gap-4">
-                          <span className="flex items-center gap-1 text-xs font-semibold text-on-surface-variant/80">
-                            <span className="material-symbols-outlined text-sm">spa</span>
-                            Spa
-                          </span>
-                          <span className="flex items-center gap-1 text-xs font-semibold text-on-surface-variant/80">
-                            <span className="material-symbols-outlined text-sm">restaurant</span>
-                            Michelin Dining
-                          </span>
+                      {/* Amenities */}
+                      {hotel.amenities && hotel.amenities.length > 0 && (
+                        <div className="flex gap-4 flex-wrap mb-4">
+                          {hotel.amenities.slice(0, 4).map((amenity: string, idx: number) => (
+                            <span key={idx} className="flex items-center gap-1 text-xs font-semibold text-on-surface-variant/80">
+                              <span className="material-symbols-outlined text-sm">check_circle</span>
+                              {amenity}
+                            </span>
+                          ))}
                         </div>
-                        <div className="flex gap-4">
-                          <button className="font-label text-sm font-bold text-on-surface-variant hover:text-primary transition-colors px-4 py-2">View Rooms</button>
-                          <button className="bg-primary hover:bg-primary-container text-white px-8 py-2 rounded-full font-bold shadow-lg shadow-primary/10 transition-all active:scale-95">Select</button>
-                        </div>
+                      )}
+
+                      {/* Buttons */}
+                      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:justify-end mt-6 pt-6 border-t border-outline-variant/10">
+                        <button className="font-label text-sm font-bold text-on-surface-variant hover:text-primary transition-colors px-6 py-2.5 border border-outline-variant/30 rounded-full hover:border-primary">
+                          View Details
+                        </button>
+                        <button className="bg-primary hover:bg-primary-container text-white px-8 py-2.5 rounded-full font-bold shadow-lg shadow-primary/10 transition-all active:scale-95">
+                          Select
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -184,12 +319,14 @@ export default function HotelsPage() {
               ))}
             </div>
             
-            <div className="mt-12 flex justify-center">
-              <button className="flex items-center gap-2 px-8 py-4 bg-surface-container-low hover:bg-surface-container-high rounded-full font-label text-sm font-bold tracking-widest uppercase transition-all">
-                Load More Properties
-                <span className="material-symbols-outlined text-lg">expand_more</span>
-              </button>
-            </div>
+            {hotels.length > 0 && hotels.length >= 20 && (
+              <div className="mt-12 flex justify-center">
+                <button className="flex items-center gap-2 px-8 py-4 bg-surface-container-low hover:bg-surface-container-high rounded-full font-label text-sm font-bold tracking-widest uppercase transition-all">
+                  Load More Properties
+                  <span className="material-symbols-outlined text-lg">expand_more</span>
+                </button>
+              </div>
+            )}
           </section>
         </div>
       </main>
