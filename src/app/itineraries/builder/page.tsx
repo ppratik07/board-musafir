@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 
 interface Activity {
@@ -41,7 +41,7 @@ interface Itinerary {
   travelTips?: string[];
 }
 
-export default function AIBuilderPage() {
+function AIBuilderContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -486,5 +486,20 @@ export default function AIBuilderPage() {
         </div>
       </footer>
     </>
+  );
+}
+
+export default function AIBuilderPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-on-surface-variant">Loading your itinerary builder...</p>
+        </div>
+      </div>
+    }>
+      <AIBuilderContent />
+    </Suspense>
   );
 }

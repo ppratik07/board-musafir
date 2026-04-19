@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
       // Return mock data for development
       return NextResponse.json({
         success: true,
-        data: getMockItinerary(destination, startDate, endDate, travelers),
+        data: getMockItinerary(destination, startDate, endDate, travelers || 'Solo Explorer'),
         source: 'mock'
       });
     }

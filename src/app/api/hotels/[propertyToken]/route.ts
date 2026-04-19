@@ -8,10 +8,10 @@ import { apiResponse, apiError } from '@/lib/api/helpers';
  */
 export async function GET(
   req: NextRequest,
-  { params }: { params: { propertyToken: string } }
+  { params }: { params: Promise<{ propertyToken: string }> }
 ) {
   try {
-    const { propertyToken } = params;
+    const { propertyToken } = await params;
 
     if (!propertyToken) {
       return NextResponse.json(

@@ -1,4 +1,4 @@
-import { User, Itinerary, Booking, Activity, Hotel } from '@prisma/client';
+import { User, Profile, Itinerary, Booking, Activity, Hotel } from '@prisma/client';
 
 // Extended user type with relations
 export type UserWithProfile = User & {

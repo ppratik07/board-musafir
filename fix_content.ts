@@ -53,8 +53,8 @@ files.forEach(file => {
 
   // Currencies - Replace $ and £ with ₹, and adjust numbers a bit to look like reasonable INR
   // Simple regex for $1,284 -> ₹12,840
-  content = content.replace(/\$([0-9,]+)/g, (match, p1) => `₹${p1}0`);
-  content = content.replace(/£([0-9,]+)/g, (match, p1) => `₹${p1}0`);
+  content = content.replace(/\$([0-9,]+)/g, (_match: string, p1: string) => `₹${p1}0`);
+  content = content.replace(/£([0-9,]+)/g, (_match: string, p1: string) => `₹${p1}0`);
 
   fs.writeFileSync(fullPath, content);
 });

@@ -36,7 +36,7 @@ export function apiError(error: unknown, defaultMessage: string = 'An error occu
       {
         success: false,
         error: 'Validation error',
-        details: error.errors,
+        details: error.issues,
       },
       { status: 400 }
     );
