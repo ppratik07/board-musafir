@@ -3,8 +3,7 @@
  * Uses Google Hotels search results via SerpAPI
  */
 
-import { Redis } from 'ioredis';
-import { redis } from './redis';
+import { cache } from './redis';
 
 // SERP API Types
 export interface SerpHotelSearchParams {
@@ -102,7 +101,6 @@ export interface SerpHotelSearchResponse {
 class SerpAPIService {
   private apiKey: string;
   private baseUrl = 'https://serpapi.com/search.json';
-  private redis: Redis;
 
   constructor() {
     const key = process.env.SERPAPI_API_KEY;
@@ -110,7 +108,6 @@ class SerpAPIService {
       throw new Error('SERPAPI_API_KEY is not configured');
     }
     this.apiKey = key;
-    this.redis = redis;
   }
 
   /**
@@ -121,10 +118,10 @@ class SerpAPIService {
     const cacheKey = `serp:hotels:${JSON.stringify(params)}`;
     
     // Check cache first (cache for 1 hour)
-    const cached = await this.redis.get(cacheKey);
+    const cached = await cache.get<SerpHotelSearchResponse>(cacheKey);
     if (cached) {
       console.log('🔍 SERP API: Returning cached hotel results');
-      return JSON.parse(cached);
+      return cached;
     }
 
     // Build query parameters
@@ -188,7 +185,7 @@ class SerpAPIService {
       }
 
       // Cache the results for 1 hour
-      await this.redis.setex(cacheKey, 3600, JSON.stringify(data));
+      await cache.set(cacheKey, data, 3600);
 
       console.log(`✅ SERP API: Found ${data.properties?.length || 0} hotels`);
       return data;
@@ -206,9 +203,9 @@ class SerpAPIService {
     const cacheKey = `serp:hotel:${propertyToken}`;
     
     // Check cache
-    const cached = await this.redis.get(cacheKey);
+    const cached = await cache.get<any>(cacheKey);
     if (cached) {
-      return JSON.parse(cached);
+      return cached;
     }
 
     const queryParams = new URLSearchParams({
@@ -230,7 +227,7 @@ class SerpAPIService {
       const data = await response.json();
 
       // Cache for 24 hours (hotel details change less frequently)
-      await this.redis.setex(cacheKey, 86400, JSON.stringify(data));
+      await cache.set(cacheKey, data, 86400);
 
       return data;
     } catch (error) {
